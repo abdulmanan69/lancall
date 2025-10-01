@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>LAN Voice Call</title>
+    <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container mx-auto px-4 py-8">
+        <header class="text-center mb-10">
+            <h1>LAN Voice Call</h1>
+            <p class="text-gray-400 mt-2">Make voice calls to other devices on your local network</p>
+        </header>
+
+        <div class="max-w-4xl mx-auto">
+            <!-- Status Section -->
+            <div class="glass-container mb-8">
+                <div class="status-section">
+                    <div class="user-info">
+                        <div>
+                            <div class="text-gray-400 text-sm">Your Device</div>
+                            <div class="editable-name mt-1">
+                                <span id="device-name" class="font-semibold"></span>
+                                <input type="text" id="edit-name-input" class="hidden" maxlength="20">
+                                <button id="edit-name-btn" class="text-gray-400 hover:text-white text-sm ml-2">✏️</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LAN IP Section -->
+            <div class="lan-ip-section glass-container">
+                <div class="font-bold">Your Local Network Address:</div>
+                <div id="lan-ip" class="text-lg mt-1"></div>
+                <div class="text-sm text-gray-400 mt-2">Share this address with other devices on your network</div>
+            </div>
+
+            <!-- Incoming Call Notification -->
+            <div id="incoming-call" class="hidden">
+                <div class="phone-call-screen glass-container">
+                    <div class="caller-info-section">
+                        <div class="caller-avatar">
+                            <span class="avatar-icon">👤</span>
+                        </div>
+                        <div class="caller-name" id="caller-name-display"></div>
+                        <div class="call-status">Incoming Call</div>
+                    </div>
+                    <div class="call-actions-phone">
+                        <button id="reject-call-large" class="btn btn-danger btn-round btn-large">
+                            <span>✗</span>
+                        </button>
+                        <button id="accept-call-large" class="btn btn-success btn-round btn-large">
+                            <span>✓</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Peers List -->
+            <div class="glass-container peers-section">
+                <div class="peers-header">
+                    <h2>Connected Peers</h2>
+                </div>
+                <div id="peers-list" class="peers-list-container">
+                    <!-- Peers will be populated here -->
+                    <div class="empty-state">
+                        <p>No peers connected yet</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Call Controls -->
+            <div id="call-controls" class="hidden glass-container call-controls">
+                <div class="call-header">
+                    <div>
+                        <h3>Current Call</h3>
+                        <p class="text-gray-400 mt-1">With: <span id="current-peer" class="current-peer"></span></p>
+                    </div>
+                    <button id="hangup" class="btn btn-danger btn-hangup">
+                        <span>📞</span> Hang Up
+                    </button>
+                </div>
+                <div class="mute-controls">
+                    <button id="toggle-mute" class="btn btn-primary">
+                        <span>🎤</span> Mute Microphone
+                    </button>
+                    <span id="mute-status" class="mute-status">Microphone: On</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hidden audio element for remote audio with mobile-specific attributes -->
+        <audio id="remote-audio" autoplay playsinline controls="false" style="display: none;"></audio>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

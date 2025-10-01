@@ -1,0 +1,477 @@
+/* Custom styles for the LAN Voice Call app */
+
+/* Dark theme with glassmorphism effects */
+:root {
+  --glass-bg: rgba(30, 30, 40, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  --glass-backdrop: blur(12px);
+  --primary-color: #8b5cf6;
+  --primary-light: #a78bfa;
+  --success-color: #10b981;
+  --warning-color: #f59e0b;
+  --danger-color: #ef4444;
+  --text-primary: #f3f4f6;
+  --text-secondary: #d1d5db;
+  --text-muted: #9ca3af;
+}
+
+body {
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  color: var(--text-primary);
+  min-height: 100vh;
+  margin: 0;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+/* Glassmorphism container */
+.glass-container {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: var(--glass-backdrop);
+  -webkit-backdrop-filter: var(--glass-backdrop);
+}
+
+/* Header styling */
+header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+header h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  background: linear-gradient(to right, var(--primary-light), var(--primary-color));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 0.5rem;
+}
+
+/* Main container */
+.container {
+  max-width: 1200px;
+}
+
+/* Status section */
+.status-section {
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.user-info {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Editable user name */
+.editable-name {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.editable-name span {
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+
+.editable-name span:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.editable-name input {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  padding: 0.25rem 0.5rem;
+  color: var(--text-primary);
+  font-weight: 600;
+  width: 150px;
+}
+
+.editable-name input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+/* LAN IP section */
+.lan-ip-section {
+  background: rgba(139, 92, 246, 0.1);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-top: 1rem;
+}
+
+.lan-ip-section .font-bold {
+  color: var(--primary-light);
+  margin-bottom: 0.5rem;
+}
+
+.lan-ip-section .text-lg {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  word-break: break-all;
+}
+
+/* Incoming call notification */
+#incoming-call {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.phone-call-screen {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 25px;
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: var(--glass-backdrop);
+  -webkit-backdrop-filter: var(--glass-backdrop);
+  width: 90%;
+  max-width: 400px;
+  padding: 2rem;
+  text-align: center;
+  animation: pop-in 0.3s ease-out;
+}
+
+@keyframes pop-in {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.caller-info-section {
+  margin-bottom: 2rem;
+}
+
+.caller-avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: rgba(139, 92, 246, 0.2);
+  border: 2px solid var(--primary-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 1.5rem;
+}
+
+.avatar-icon {
+  font-size: 3.5rem;
+}
+
+.caller-name {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.call-status {
+  font-size: 1.2rem;
+  color: var(--text-secondary);
+}
+
+.call-actions-phone {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 2rem;
+}
+
+.btn-round {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  font-size: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  border: none;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+}
+
+.btn-round:hover {
+  transform: scale(1.1);
+}
+
+.btn-round.btn-large {
+  width: 80px;
+  height: 80px;
+  font-size: 2.5rem;
+}
+
+.btn-success {
+  background: var(--success-color);
+  color: white;
+}
+
+.btn-danger {
+  background: var(--danger-color);
+  color: white;
+}
+
+.btn-danger:hover {
+  background: #ff6b6b;
+  transform: scale(1.05);
+}
+
+/* Improved hangup button */
+.btn-hangup {
+  background: var(--danger-color);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+}
+
+.btn-hangup:hover {
+  background: #ff6b6b;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+}
+
+.btn-hangup:active {
+  transform: translateY(0);
+}
+
+/* Peers list */
+.peers-section {
+  padding: 1.5rem;
+}
+
+.peers-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.peers-header h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.peers-list-container {
+  display: grid;
+  gap: 1rem;
+}
+
+.peer-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.peer-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.peer-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.peer-name {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: var(--text-primary);
+}
+
+.peer-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.status-indicator {
+  display: inline-block;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+}
+
+.status-online {
+  background-color: var(--success-color);
+}
+
+.status-offline {
+  background-color: var(--text-muted);
+}
+
+.peer-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+/* Call controls */
+.call-controls {
+  padding: 1.5rem;
+  margin-top: 2rem;
+}
+
+.call-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.call-header h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.current-peer {
+  font-weight: 600;
+  color: var(--primary-light);
+}
+
+.mute-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.mute-status {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+/* Empty state */
+.empty-state {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--text-muted);
+}
+
+.empty-state p {
+  margin: 0;
+}
+
+/* Utility classes */
+.hidden {
+  display: none !important;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.mt-1 {
+  margin-top: 0.25rem;
+}
+
+.mt-2 {
+  margin-top: 0.5rem;
+}
+
+.mt-4 {
+  margin-top: 1rem;
+}
+
+.mb-4 {
+  margin-bottom: 1rem;
+}
+
+.mb-8 {
+  margin-bottom: 2rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .user-info {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .peer-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .peer-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+  
+  .call-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  header h1 {
+    font-size: 2rem;
+  }
+  
+  .phone-call-screen {
+    width: 95%;
+    padding: 1.5rem;
+  }
+  
+  .caller-avatar {
+    width: 100px;
+    height: 100px;
+  }
+  
+  .avatar-icon {
+    font-size: 3rem;
+  }
+  
+  .caller-name {
+    font-size: 1.5rem;
+  }
+  
+  .btn-hangup {
+    width: 100%;
+    justify-content: center;
+    padding: 1rem;
+    font-size: 1.2rem;
+  }
+}
