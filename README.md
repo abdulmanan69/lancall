@@ -2,6 +2,10 @@
 
 A peer-to-peer voice calling application that works over LAN (Local Area Network) using WebRTC technology. This application allows users on the same network to make voice calls directly between devices without any external servers.
 
+## Repository
+
+- **GitHub**: [LAN Voice Call on GitHub](https://github.com/yourusername/lan-voice-call)
+
 ## Features
 
 - **Peer-to-Peer Communication**: Direct voice communication between devices using WebRTC
