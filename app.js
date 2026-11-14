@@ -110,20 +110,23 @@ function displayLanIp() {
     const lanIp = window.location.hostname;
     const isLocalhost = lanIp === 'localhost' || lanIp === '127.0.0.1';
     const isHttps = window.location.protocol === 'https:';
-    
+
+    // The URL comes from whatever link was opened, so it is set as text only
+    lanIpElement.textContent = '';
+
     if (isLocalhost) {
         // If accessing via localhost, show both options
-        lanIpElement.innerHTML = `
-            <div class="font-mono">${window.location.protocol}//${lanIp}:${window.location.port}</div>
-            <div class="text-sm text-gray-400 mt-2">Share with others: <span class="font-mono">${window.location.protocol}//${getLocalIP()}:${window.location.port}</span></div>
-        `;
+        lanIpElement.appendChild(makeElement('div', 'font-mono', `${window.location.protocol}//${lanIp}:${window.location.port}`));
+        const shareElement = makeElement('div', 'text-sm text-gray-400 mt-2', 'Share with others: ');
+        shareElement.appendChild(makeElement('span', 'font-mono', `${window.location.protocol}//${getLocalIP()}:${window.location.port}`));
+        lanIpElement.appendChild(shareElement);
     } else {
         // If accessing via IP, show IP address
-        lanIpElement.innerHTML = `
-            <div class="font-mono">${window.location.href}</div>
-            <div class="text-sm text-gray-400 mt-2">${isMobileDevice() ? '📱' : '💻'} Accessing from ${isMobileDevice() ? 'mobile' : 'computer'}</div>
-            ${isHttps ? '<div class="text-xs mt-2 text-green-400">🔒 Secure connection</div>' : ''}
-        `;
+        lanIpElement.appendChild(makeElement('div', 'font-mono', window.location.href));
+        lanIpElement.appendChild(makeElement('div', 'text-sm text-gray-400 mt-2', `${isMobileDevice() ? '📱' : '💻'} Accessing from ${isMobileDevice() ? 'mobile' : 'computer'}`));
+        if (isHttps) {
+            lanIpElement.appendChild(makeElement('div', 'text-xs mt-2 text-green-400', '🔒 Secure connection'));
+        }
     }
 }
 
