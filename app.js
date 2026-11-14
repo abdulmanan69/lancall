@@ -775,48 +775,60 @@ function toggleMute() {
     }
 }
 
+// Create an element with an optional class name and text content.
+// Peer-supplied strings (names, ids) must only ever reach the page through
+// textContent / setAttribute, never through innerHTML.
+function makeElement(tag, className, text) {
+    const element = document.createElement(tag);
+    if (className) {
+        element.className = className;
+    }
+    if (text !== undefined) {
+        element.textContent = text;
+    }
+    return element;
+}
+
 // Update the peers list in the UI
 function updatePeersList(clients) {
     // Filter out our own ID
     const peers = clients.filter(client => client.id !== userId);
     
+    peersListElement.textContent = '';
+    
     if (peers.length === 0) {
-        peersListElement.innerHTML = `
-            <div class="empty-state">
-                <p>No peers connected yet</p>
-            </div>
-        `;
+        const emptyState = makeElement('div', 'empty-state');
+        emptyState.appendChild(makeElement('p', null, 'No peers connected yet'));
+        peersListElement.appendChild(emptyState);
         return;
     }
     
-    peersListElement.innerHTML = '';
-    
     peers.forEach(peer => {
-        const peerElement = document.createElement('div');
-        peerElement.className = 'peer-item';
-        peerElement.innerHTML = `
-            <div class="peer-info">
-                <div class="peer-name">${peer.name || peer.id}</div>
-                <div class="peer-status">
-                    <span class="status-indicator status-online"></span>
-                    <span>Online</span>
-                </div>
-            </div>
-            <div class="peer-actions">
-                <button class="btn btn-primary call-button" data-peer-id="${peer.id}">
-                    <span>📞</span> Call
-                </button>
-            </div>
-        `;
-        peersListElement.appendChild(peerElement);
-    });
-    
-    // Add event listeners to call buttons
-    document.querySelectorAll('.call-button').forEach(button => {
-        button.addEventListener('click', () => {
-            const peerId = button.getAttribute('data-peer-id');
+        const peerId = String(peer.id);
+        
+        const peerElement = makeElement('div', 'peer-item');
+        
+        const peerInfo = makeElement('div', 'peer-info');
+        peerInfo.appendChild(makeElement('div', 'peer-name', String(peer.name || peer.id)));
+        const peerStatus = makeElement('div', 'peer-status');
+        peerStatus.appendChild(makeElement('span', 'status-indicator status-online'));
+        peerStatus.appendChild(makeElement('span', null, 'Online'));
+        peerInfo.appendChild(peerStatus);
+        
+        const peerActions = makeElement('div', 'peer-actions');
+        const callButton = makeElement('button', 'btn btn-primary call-button');
+        callButton.setAttribute('data-peer-id', peerId);
+        callButton.appendChild(makeElement('span', null, '📞'));
+        callButton.appendChild(document.createTextNode(' Call'));
+        // Add event listener to the call button
+        callButton.addEventListener('click', () => {
             startCall(peerId);
         });
+        peerActions.appendChild(callButton);
+        
+        peerElement.appendChild(peerInfo);
+        peerElement.appendChild(peerActions);
+        peersListElement.appendChild(peerElement);
     });
 }
 
