@@ -7,6 +7,36 @@ import http.server
 import ssl
 import socket
 import os
+from urllib.parse import urlsplit
+
+# Only these files are served. Everything else in this folder (server.key,
+# server.crt, the Python sources, ...) must never be sent to clients.
+ALLOWED_FILES = {
+    "/": "index.html",
+    "/index.html": "index.html",
+    "/app.js": "app.js",
+    "/style.css": "style.css",
+}
+
+
+class AppFileHandler(http.server.SimpleHTTPRequestHandler):
+    """Serve only the web app files listed in ALLOWED_FILES; 404 for anything else."""
+
+    def send_head(self):
+        # Match the raw request path exactly (query string ignored), so no
+        # encoding or traversal trick can reach a file outside the allowlist.
+        request_path = urlsplit(self.path).path
+        filename = ALLOWED_FILES.get(request_path)
+        if filename is None:
+            self.send_error(404, "File not found")
+            return None
+        self.path = "/" + filename
+        return super().send_head()
+
+    def list_directory(self, path):
+        self.send_error(404, "File not found")
+        return None
+
 
 def get_local_ip():
     """Get the local IP address"""
@@ -22,23 +52,25 @@ def get_local_ip():
 
 def run_https_server():
     """Run the HTTPS server"""
+    # Get the directory where this script is located
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+
+    # Change to the script directory to serve files from there
+    # (done before the certificate check so the check and the load below
+    # look in the same folder)
+    os.chdir(script_dir)
+
     # Check if certificate files exist
     if not os.path.exists("server.crt") or not os.path.exists("server.key"):
         print("Certificate files not found!")
         print("Please run 'python generate_cert.py' first to generate them.")
         return
-    
-    # Get the directory where this script is located
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    
-    # Change to the script directory to serve files from there
-    os.chdir(script_dir)
-    
+
     # Set up the HTTP server
     server_address = ('0.0.0.0', 8443)
-    
-    # Create HTTP server
-    httpd = http.server.HTTPServer(server_address, http.server.SimpleHTTPRequestHandler)
+
+    # Create HTTP server (serves only the allowlisted web app files)
+    httpd = http.server.HTTPServer(server_address, AppFileHandler)
     
     # Create SSL context (modern approach)
     context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
