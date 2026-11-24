@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Phone setup · LAN Call</title>
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="setup.css">
+</head>
+<body>
+  <main>
+    <img class="doodle" src="/doodle-strolling.svg" alt="" width="240" height="180">
+    <h1>Set up a phone</h1>
+    <p>Browsers only allow the microphone on secure pages. This phone system secures itself with its own certificate, which each device has to be told to trust <strong>once</strong>. After that there are no warnings, and calls ring reliably.</p>
+
+    <p><a class="button" href="/ca.crt" download="lancall-ca.crt">Download the certificate</a></p>
+
+    <h2>Windows</h2>
+    <ol>
+      <li>Open the downloaded <code>lancall-ca.crt</code> and choose <b>Install Certificate</b>.</li>
+      <li>Pick <b>Current User</b>, then <b>Place all certificates in the following store</b>.</li>
+      <li>Browse to <b>Trusted Root Certification Authorities</b>, finish, and confirm.</li>
+      <li>Restart the browser.</li>
+    </ol>
+
+    <h2>Android</h2>
+    <ol>
+      <li>Download the certificate.</li>
+      <li>Open <b>Settings</b> and search for <b>CA certificate</b> (usually under Security, then Encryption and credentials, then Install a certificate).</li>
+      <li>Choose <b>CA certificate</b>, accept the warning, and pick the downloaded file.</li>
+    </ol>
+
+    <h2>iPhone and iPad</h2>
+    <ol>
+      <li>Download the certificate in Safari and allow the profile download.</li>
+      <li>Open <b>Settings</b>, tap <b>Profile Downloaded</b>, and install it.</li>
+      <li>Go to <b>Settings › General › About › Certificate Trust Settings</b> and switch on full trust for <b>LAN Call Local CA</b>.</li>
+    </ol>
+
+    <h2>Mac</h2>
+    <ol>
+      <li>Open the downloaded file; it is added to <b>Keychain Access</b>.</li>
+      <li>Find <b>LAN Call Local CA</b>, open it, expand <b>Trust</b>, and set <b>Always Trust</b>.</li>
+    </ol>
+
+    <h2>Linux</h2>
+    <ol>
+      <li>Chrome: <b>Settings › Privacy and security › Security › Manage certificates › Authorities › Import</b>.</li>
+      <li>Firefox: <b>Settings › Privacy &amp; Security › Certificates › View Certificates › Authorities › Import</b>.</li>
+    </ol>
+
+    <h2>Just trying it out?</h2>
+    <p>You can skip all of this: open the phone page, and on the browser warning choose <b>Advanced</b>, then <b>Proceed</b>. Calls work, but notifications for calls in the background may not, and some phones refuse to connect at all without the certificate.</p>
+
+    <p><a href="/">Open the phone</a></p>
+  </main>
+</body>
+</html>

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#f4f3ef" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#121412" media="(prefers-color-scheme: dark)">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>LAN Call</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon.svg">
+  <link rel="stylesheet" href="style.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <svg class="sprite" aria-hidden="true" focusable="false">
+    <symbol id="i-phone" viewBox="0 0 24 24"><path d="M6.6 3h3l1.5 4.5-2 1.5a12 12 0 0 0 5.9 5.9l1.5-2 4.5 1.5v3a2 2 0 0 1-2.2 2A17 17 0 0 1 4.6 5.200A2 2 0 0 1 6.6 3z"/></symbol>
+    <symbol id="i-hangup" viewBox="0 0 24 24"><path d="M3 14.500c0-1 .4-2 1.200-2.600a12.500 12.500 0 0 1 15.600 0c.8.6 1.200 1.600 1.200 2.600v1.200a1 1 0 0 1-1.300 1l-3.200-1a1 1 0 0 1-.7-1v-1.900a9 9 0 0 0-7.600 0v1.900a1 1 0 0 1-.7 1l-3.200 1a1 1 0 0 1-1.300-1z"/></symbol>
+    <symbol id="i-mic" viewBox="0 0 24 24"><path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3zM6 11v1a6 6 0 0 0 12 0v-1M12 18v3M9 21h6" fill="none" stroke="currentColor" stroke-width="1.800" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-mic-off" viewBox="0 0 24 24"><path d="M9 9v3a3 3 0 0 0 4.700 2.500M15 11V6a3 3 0 0 0-5.700-1.300M6 11v1a6 6 0 0 0 9.600 4.800M18 11v1c0 .7-.1 1.400-.4 2M12 18v3M9 21h6M4 4l16 16" fill="none" stroke="currentColor" stroke-width="1.800" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-pause" viewBox="0 0 24 24"><path d="M8 5v14M16 5v14" fill="none" stroke="currentColor" stroke-width="2.400" stroke-linecap="round"/></symbol>
+    <symbol id="i-gear" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></g></symbol>
+    <symbol id="i-back" viewBox="0 0 24 24"><path d="M9 5H20a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H9l-6-7zM12 9.500l5 5M17 9.500l-5 5" fill="none" stroke="currentColor" stroke-width="1.800" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-in" viewBox="0 0 24 24"><path d="M17 7L7 17M7 9v8h8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-out" viewBox="0 0 24 24"><path d="M7 17L17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-missed" viewBox="0 0 24 24"><path d="M5 7l7 7 7-7M5 7v5M5 7h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-transfer" viewBox="0 0 24 24"><path d="M4 8h14M14 4l4 4-4 4M20 16H6M10 12l-4 4 4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  </svg>
+
+  <!-- First run: name this phone -->
+  <section id="view-onboarding" class="view onboarding" hidden>
+    <form id="onboarding-form" class="card" autocomplete="off">
+      <img class="doodle" src="doodle-loving.svg" alt="" width="208" height="156">
+      <h1 id="onboarding-title">Set up this phone</h1>
+      <p class="muted">Others see this name in the directory. Use the place or the person, such as “Reception” or “Workshop”.</p>
+      <label for="onboarding-name">Phone name</label>
+      <input id="onboarding-name" name="name" type="text" maxlength="32" required autocapitalize="words" enterkeyhint="done">
+      <div id="onboarding-pin-row" hidden>
+        <label for="onboarding-pin">Access code</label>
+        <input id="onboarding-pin" name="pin" type="password" inputmode="numeric" maxlength="64" autocomplete="off" aria-describedby="onboarding-error">
+      </div>
+      <p id="onboarding-error" class="field-error" role="alert"></p>
+      <button type="submit" class="btn primary wide">Continue</button>
+    </form>
+  </section>
+
+  <!-- Everyday view -->
+  <div id="view-main" class="view" hidden>
+    <header class="bar">
+      <div class="identity">
+        <span id="conn-dot" class="dot" data-state="connecting" aria-hidden="true"></span>
+        <div>
+          <div id="my-name" class="my-name">&nbsp;</div>
+          <div class="muted small"><span id="conn-text">Connecting…</span><span id="my-ext-wrap" hidden> · Extension <strong id="my-ext" class="num"></strong></span></div>
+        </div>
+      </div>
+      <div class="bar-actions">
+        <label class="switch" title="Send callers straight to missed calls">
+          <input id="dnd" type="checkbox" role="switch">
+          <span class="long">Do not disturb</span><abbr class="short" title="Do not disturb">DND</abbr>
+        </label>
+        <button id="open-settings" type="button" class="icon-btn" aria-label="Settings">
+          <svg aria-hidden="true"><use href="#i-gear"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <div id="banner" class="banner" role="status" hidden>
+      <span id="banner-text"></span>
+      <button id="banner-action" type="button" class="btn small" hidden></button>
+    </div>
+
+    <main>
+      <div class="tabs" role="tablist" focusgroup="tablist nomemory" aria-label="Phone">
+        <button type="button" role="tab" id="tab-directory" aria-selected="true" focusgroupstart>Directory</button>
+        <button type="button" role="tab" id="tab-keypad" aria-selected="false" tabindex="-1">Keypad</button>
+        <button type="button" role="tab" id="tab-recents" aria-selected="false" tabindex="-1">Recents <span id="missed-badge" class="badge" hidden></span></button>
+        <button type="button" role="tab" id="tab-calls" aria-selected="false" tabindex="-1" hidden>Live <span id="calls-badge" class="badge calm" hidden></span></button>
+      </div>
+
+      <section id="panel-directory" role="tabpanel" aria-labelledby="tab-directory">
+        <div class="panel-body">
+          <label class="visually-hidden" for="search">Search the directory</label>
+          <input id="search" type="search" placeholder="Search name or extension" autocomplete="off">
+          <ul id="directory" class="list"></ul>
+          <div id="directory-empty" class="empty" hidden><img class="doodle" src="doodle-chilling.svg" alt="" width="176" height="132"><p id="directory-empty-text"></p></div>
+        </div>
+      </section>
+
+      <section id="panel-keypad" role="tabpanel" aria-labelledby="tab-keypad" hidden>
+        <form id="dial-form" class="panel-body keypad-panel" autocomplete="off">
+          <label class="visually-hidden" for="dial-input">Extension to call</label>
+          <input id="dial-input" class="dial-display num" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="Extension" enterkeyhint="go">
+          <p id="dial-match" class="muted dial-match">&nbsp;</p>
+          <div class="keys">
+            <button type="button" class="key" data-key="1">1</button>
+            <button type="button" class="key" data-key="2">2</button>
+            <button type="button" class="key" data-key="3">3</button>
+            <button type="button" class="key" data-key="4">4</button>
+            <button type="button" class="key" data-key="5">5</button>
+            <button type="button" class="key" data-key="6">6</button>
+            <button type="button" class="key" data-key="7">7</button>
+            <button type="button" class="key" data-key="8">8</button>
+            <button type="button" class="key" data-key="9">9</button>
+            <button type="button" class="key quiet" data-key="back" aria-label="Delete last digit"><svg aria-hidden="true"><use href="#i-back"/></svg></button>
+            <button type="button" class="key" data-key="0">0</button>
+            <button type="submit" class="key call" aria-label="Call"><svg aria-hidden="true"><use href="#i-phone"/></svg></button>
+          </div>
+        </form>
+      </section>
+
+      <section id="panel-recents" role="tabpanel" aria-labelledby="tab-recents" hidden>
+        <div class="panel-body">
+          <ul id="recents" class="list"></ul>
+          <div id="recents-empty" class="empty"><img class="doodle" src="doodle-coffee.svg" alt="" width="176" height="132"><p>No calls yet.</p></div>
+          <button id="clear-recents" type="button" class="btn small quiet-btn" hidden>Clear history</button>
+        </div>
+      </section>
+
+      <section id="panel-calls" role="tabpanel" aria-labelledby="tab-calls" hidden>
+        <div class="panel-body">
+          <p class="muted small">Calls in progress. Monitor one to listen, whisper to one person, or join.</p>
+          <ul id="live-calls" class="list"></ul>
+          <div id="live-calls-empty" class="empty"><img class="doodle" src="doodle-meditating.svg" alt="" width="176" height="132"><p>No calls in progress.</p></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Supervisor: listening to someone else's call -->
+  <section id="view-sup" class="view call-view" hidden aria-labelledby="sup-title">
+    <div class="call-top">
+      <p id="sup-title" class="muted">Monitoring the call between</p>
+      <h1 id="sup-names"></h1>
+      <p id="sup-status" class="call-status" role="status" aria-live="off"></p>
+      <p id="sup-mode" class="sup-mode" role="status" aria-live="polite"></p>
+      <p id="sup-nomic" class="muted small" hidden>No microphone: you can listen but not speak.</p>
+    </div>
+    <div class="call-actions">
+      <div class="sup-modes">
+        <button id="sup-listen" type="button" class="btn" aria-pressed="true">Listen only</button>
+        <button id="sup-whisper-a" type="button" class="btn" aria-pressed="false">Whisper</button>
+        <button id="sup-whisper-b" type="button" class="btn" aria-pressed="false">Whisper</button>
+        <button id="sup-barge" type="button" class="btn" aria-pressed="false">Barge in</button>
+      </div>
+      <button id="sup-stop" type="button" class="btn danger-btn">Stop monitoring</button>
+    </div>
+  </section>
+
+  <!-- Call in progress: a full view, deliberately not dismissable -->
+  <section id="view-call" class="view call-view" hidden aria-labelledby="call-name">
+    <div class="call-top">
+      <div id="call-avatar" class="avatar big" aria-hidden="true"></div>
+      <h1 id="call-name"></h1>
+      <p id="call-ext" class="muted num"></p>
+      <p id="call-status" class="call-status" role="status" aria-live="polite"></p>
+      <p id="call-quality" class="muted small" hidden></p>
+      <p id="call-sup" class="sup-notice" role="status" aria-live="polite" hidden></p>
+    </div>
+    <div class="call-actions">
+      <div id="call-incoming" class="row" hidden>
+        <button id="btn-decline" type="button" class="round danger"><svg aria-hidden="true"><use href="#i-hangup"/></svg><span>Decline</span></button>
+        <button id="btn-accept" type="button" class="round accept"><svg aria-hidden="true"><use href="#i-phone"/></svg><span>Answer</span></button>
+      </div>
+      <div id="call-live" class="row four" hidden>
+        <button id="btn-mute" type="button" class="round neutral" aria-pressed="false"><svg aria-hidden="true"><use id="mute-icon" href="#i-mic"/></svg><span>Mute</span></button>
+        <button id="btn-hold" type="button" class="round neutral" aria-pressed="false"><svg aria-hidden="true"><use href="#i-pause"/></svg><span>Hold</span></button>
+        <button id="btn-transfer" type="button" class="round neutral"><svg aria-hidden="true"><use href="#i-transfer"/></svg><span>Transfer</span></button>
+        <button id="btn-hangup" type="button" class="round danger"><svg aria-hidden="true"><use href="#i-hangup"/></svg><span>End</span></button>
+      </div>
+      <div id="call-done" class="row" hidden>
+        <button id="btn-done" type="button" class="btn">Close</button>
+      </div>
+    </div>
+  </section>
+
+  <dialog id="settings" aria-labelledby="settings-title" closedby="any">
+    <form id="settings-form" method="dialog" autocomplete="off">
+      <h1 id="settings-title">Settings</h1>
+
+      <label for="set-name">Phone name</label>
+      <input id="set-name" type="text" maxlength="32" required autofocus>
+
+      <label for="set-ext">Extension</label>
+      <input id="set-ext" class="num" type="text" inputmode="numeric" pattern="[1-9][0-9]{1,5}" maxlength="6" required aria-describedby="set-ext-hint settings-error">
+      <p id="set-ext-hint" class="muted small">2 to 6 digits. Others dial this number to reach you.</p>
+
+      <label for="set-mic">Microphone</label>
+      <select id="set-mic"></select>
+      <div class="mic-test">
+        <button id="mic-test" type="button" class="btn small">Test microphone</button>
+        <meter id="mic-level" min="0" max="1" value="0" aria-label="Microphone level"></meter>
+      </div>
+
+      <div id="set-speaker-row">
+        <label for="set-speaker">Speaker</label>
+        <select id="set-speaker"></select>
+      </div>
+
+      <label for="set-volume">Ring volume</label>
+      <div class="volume-row">
+        <input id="set-volume" type="range" min="0" max="1" step="0.05">
+        <button id="ring-test" type="button" class="btn small">Test ring</button>
+      </div>
+
+      <label class="check"><input id="set-awake" type="checkbox"> Keep the screen on (for a desk or wall phone)</label>
+
+      <div id="notify-row" class="notify-row">
+        <span id="notify-text" class="muted small"></span>
+        <button id="notify-enable" type="button" class="btn small" hidden>Turn on notifications</button>
+      </div>
+
+      <p id="settings-error" class="field-error" role="alert"></p>
+      <div class="dialog-actions">
+        <button type="button" id="settings-cancel" class="btn">Cancel</button>
+        <button type="submit" id="settings-save" class="btn primary" value="save">Save</button>
+      </div>
+      <p class="muted small about"><span id="about"></span> · <a href="/setup">Phone setup help</a></p>
+    </form>
+  </dialog>
+
+  <dialog id="transfer" aria-labelledby="transfer-title" closedby="any">
+    <form id="transfer-form" method="dialog" autocomplete="off">
+      <h1 id="transfer-title">Transfer this call</h1>
+      <p class="muted small">You leave the call and the other person rings the extension you choose.</p>
+      <label for="transfer-ext">Extension</label>
+      <input id="transfer-ext" class="num" type="text" inputmode="numeric" maxlength="6" list="transfer-list" required autofocus>
+      <datalist id="transfer-list"></datalist>
+      <div class="dialog-actions">
+        <button type="button" id="transfer-cancel" class="btn">Cancel</button>
+        <button type="submit" class="btn primary">Transfer</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="toasts" class="toasts" role="status" aria-live="polite"></div>
+  <audio id="remote-audio" autoplay playsinline></audio>
+  <audio id="sup-audio" autoplay playsinline></audio>
+  <audio id="sup-audio-a" autoplay playsinline></audio>
+  <audio id="sup-audio-b" autoplay playsinline></audio>
+</body>
+</html>

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="robots" content="noindex">
+  <title>Administration</title>
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/admin.css">
+  <script src="/admin.js" defer></script>
+</head>
+<body class="admin">
+  <!-- Sign in -->
+  <section id="view-login" class="view onboarding" hidden>
+    <form id="login-form" class="card">
+      <img class="doodle" src="/doodle-sitting.svg" alt="" width="208" height="156">
+      <h1 id="login-title">Administration</h1>
+      <p id="login-hint" class="muted">Sign in to manage this phone system.</p>
+      <label for="login-password">Administrator password</label>
+      <input id="login-password" type="password" autocomplete="current-password" required aria-describedby="login-error">
+      <p id="login-error" class="field-error" role="alert"></p>
+      <button type="submit" class="btn primary wide">Sign in</button>
+    </form>
+  </section>
+
+  <div id="view-console" class="console" hidden>
+    <header class="console-bar">
+      <div>
+        <h1 id="console-title">Administration</h1>
+        <p id="console-sub" class="muted small"></p>
+      </div>
+      <nav class="console-links" aria-label="Console">
+        <a id="link-platform" class="btn small" href="/platform" hidden>All customers</a>
+        <a id="link-app" class="btn small" href="/" hidden>Open phone app</a>
+        <button id="sign-out" type="button" class="btn small">Sign out</button>
+      </nav>
+    </header>
+    <p id="console-error" class="banner" role="alert" hidden></p>
+
+    <!-- ============ one organisation ============ -->
+    <main id="org-console" hidden>
+      <p id="org-suspended" class="banner" hidden>This phone system is suspended. Its phones cannot connect.</p>
+      <dl id="org-tiles" class="tiles"></dl>
+
+      <section class="panel" aria-labelledby="join-title">
+        <h2 id="join-title">Add a phone</h2>
+        <p>Open this address on the phone or computer<span id="join-code-text"> and enter the access code</span>.</p>
+        <p class="join"><a id="join-url" class="num" href="/"></a> <span id="join-code-wrap">Access code: <strong id="join-code" class="num"></strong></span></p>
+      </section>
+
+      <section class="panel" aria-labelledby="live-title">
+        <h2 id="live-title">Calls in progress</h2>
+        <div tabindex="0" role="region" aria-labelledby="live-title" class="table-wrap">
+          <table>
+            <thead><tr><th scope="col">From</th><th scope="col">To</th><th scope="col">State</th><th scope="col">Started</th><th scope="col">Supervisor</th><th scope="col"><span class="visually-hidden">Actions</span></th></tr></thead>
+            <tbody id="live-rows"></tbody>
+          </table>
+        </div>
+        <p id="live-empty" class="muted">No calls right now.</p>
+      </section>
+
+      <section class="panel" aria-labelledby="phones-title">
+        <h2 id="phones-title">Phones</h2>
+        <p class="muted small">A supervisor can monitor calls, whisper to one person, and barge in, from the “Live” tab of their phone.</p>
+        <div tabindex="0" role="region" aria-labelledby="phones-title" class="table-wrap">
+          <table>
+            <thead><tr><th scope="col">Name</th><th scope="col">Extension</th><th scope="col">Status</th><th scope="col">Role</th><th scope="col">Last seen</th><th scope="col"><span class="visually-hidden">Actions</span></th></tr></thead>
+            <tbody id="phone-rows"></tbody>
+          </table>
+        </div>
+        <div id="phones-empty" class="empty"><img class="doodle" src="/doodle-unboxing.svg" alt="" width="176" height="132"><p>No phones have joined yet.</p></div>
+      </section>
+
+      <section class="panel" aria-labelledby="history-title">
+        <div class="panel-head">
+          <h2 id="history-title">Call history</h2>
+          <a id="history-csv" class="btn small" href="#" download>Download CSV</a>
+        </div>
+        <div tabindex="0" role="region" aria-labelledby="history-title" class="table-wrap tall">
+          <table>
+            <thead><tr><th scope="col">When</th><th scope="col">From</th><th scope="col">To</th><th scope="col">Result</th><th scope="col">Length</th><th scope="col">Supervision</th></tr></thead>
+            <tbody id="history-rows"></tbody>
+          </table>
+        </div>
+        <div id="history-empty" class="empty"><img class="doodle" src="/doodle-reading.svg" alt="" width="176" height="132"><p>No calls yet.</p></div>
+      </section>
+
+      <section class="panel" aria-labelledby="usage-title">
+        <h2 id="usage-title">Usage by month</h2>
+        <div tabindex="0" role="region" aria-labelledby="usage-title" class="table-wrap">
+          <table>
+            <thead><tr><th scope="col">Month</th><th scope="col">Calls</th><th scope="col">Answered</th><th scope="col">Minutes</th></tr></thead>
+            <tbody id="usage-rows"></tbody>
+          </table>
+        </div>
+        <p id="usage-empty" class="muted">Nothing yet.</p>
+      </section>
+
+      <section class="panel" aria-labelledby="settings-title">
+        <h2 id="settings-title">Settings</h2>
+        <form id="settings-form" class="form-grid" autocomplete="off">
+          <div>
+            <label for="set-org-name">Name shown on the phones</label>
+            <input id="set-org-name" type="text" maxlength="40" required>
+          </div>
+          <div>
+            <label for="set-org-pin">Access code for new phones</label>
+            <input id="set-org-pin" class="num" type="text" maxlength="64" aria-describedby="set-org-pin-hint">
+            <p id="set-org-pin-hint" class="muted small">Leave empty to let anyone with the address join.</p>
+          </div>
+          <label class="check wide-cell"><input id="set-org-notice" type="checkbox"> Tell the people on a call when a supervisor is listening</label>
+          <p class="muted small wide-cell">Listening to calls without telling the people on them is against the law in many places. Turn this off only if your callers are told another way.</p>
+          <div class="wide-cell form-actions">
+            <p id="settings-msg" class="field-error" role="status"></p>
+            <button type="submit" class="btn primary">Save settings</button>
+          </div>
+        </form>
+        <form id="password-form" class="form-grid" autocomplete="off">
+          <div id="pw-current-row">
+            <label for="pw-current">Current password</label>
+            <input id="pw-current" type="password" autocomplete="current-password">
+          </div>
+          <div>
+            <label for="pw-new" id="pw-new-label">New administrator password</label>
+            <input id="pw-new" type="password" autocomplete="new-password" minlength="8" required aria-describedby="pw-hint">
+            <p id="pw-hint" class="muted small">At least 8 characters.</p>
+          </div>
+          <div class="wide-cell form-actions">
+            <p id="password-msg" class="field-error" role="status"></p>
+            <button type="submit" class="btn">Change password</button>
+          </div>
+        </form>
+      </section>
+    </main>
+
+    <!-- ============ platform: all customers ============ -->
+    <main id="platform-console" hidden>
+      <dl id="platform-tiles" class="tiles"></dl>
+      <p id="relay-warning" class="banner" hidden>No relay (TURN) server is configured. Phones on different networks may not be able to hear each other.</p>
+      <section class="panel" aria-labelledby="orgs-title">
+        <div class="panel-head">
+          <h2 id="orgs-title">Customers</h2>
+          <button id="org-add" type="button" class="btn primary small">Add customer</button>
+        </div>
+        <div tabindex="0" role="region" aria-labelledby="orgs-title" class="table-wrap">
+          <table>
+            <thead><tr><th scope="col">Customer</th><th scope="col">Address</th><th scope="col">Phones</th><th scope="col">Online</th><th scope="col">Calls this month</th><th scope="col">Minutes this month</th><th scope="col">Status</th><th scope="col"><span class="visually-hidden">Actions</span></th></tr></thead>
+            <tbody id="org-rows"></tbody>
+          </table>
+        </div>
+      </section>
+      <section class="panel" aria-labelledby="platform-pw-title">
+        <h2 id="platform-pw-title">Platform password</h2>
+        <p id="platform-pw-managed" class="muted" hidden>The password is set in the server configuration (LANCALL_ADMIN_PASSWORD).</p>
+        <form id="platform-pw-form" class="form-grid" autocomplete="off">
+          <div>
+            <label for="ppw-current">Current password</label>
+            <input id="ppw-current" type="password" autocomplete="current-password" required>
+          </div>
+          <div>
+            <label for="ppw-new">New password</label>
+            <input id="ppw-new" type="password" autocomplete="new-password" minlength="8" required>
+          </div>
+          <div class="wide-cell form-actions">
+            <p id="platform-pw-msg" class="field-error" role="status"></p>
+            <button type="submit" class="btn">Change password</button>
+          </div>
+        </form>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="phone-dialog" aria-labelledby="phone-dialog-title" closedby="any">
+    <form id="phone-form" method="dialog" autocomplete="off">
+      <h1 id="phone-dialog-title">Edit phone</h1>
+      <label for="phone-name">Name</label>
+      <input id="phone-name" type="text" maxlength="32" required autofocus>
+      <label for="phone-ext">Extension</label>
+      <input id="phone-ext" class="num" type="text" inputmode="numeric" pattern="[1-9][0-9]{1,5}" maxlength="6" required>
+      <label for="phone-role">Role</label>
+      <select id="phone-role">
+        <option value="user">User</option>
+        <option value="supervisor">Supervisor (monitor, whisper, barge)</option>
+      </select>
+      <label class="check"><input id="phone-disabled" type="checkbox"> Switched off (cannot connect; keeps its extension)</label>
+      <p id="phone-error" class="field-error" role="alert"></p>
+      <div class="dialog-actions">
+        <button type="button" class="btn" data-close>Cancel</button>
+        <button type="submit" class="btn primary">Save</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="org-dialog" aria-labelledby="org-dialog-title" closedby="any">
+    <form id="org-form" method="dialog" autocomplete="off">
+      <h1 id="org-dialog-title">Add customer</h1>
+      <label for="org-name">Name</label>
+      <input id="org-name" type="text" maxlength="40" required autofocus>
+      <label for="org-slug">Address</label>
+      <input id="org-slug" type="text" maxlength="32" pattern="[a-z0-9]([a-z0-9\-]{0,30}[a-z0-9])?" required aria-describedby="org-slug-hint" autocapitalize="none" spellcheck="false">
+      <p id="org-slug-hint" class="muted small">Their phones open <span id="org-slug-preview" class="num"></span></p>
+      <label for="org-seats">Phone seats</label>
+      <input id="org-seats" class="num" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="5" aria-describedby="org-seats-hint">
+      <p id="org-seats-hint" class="muted small">The most phones they may add. Empty for no limit.</p>
+      <label for="org-pin">Access code for their phones</label>
+      <input id="org-pin" class="num" type="text" maxlength="64">
+      <label for="org-password">Their administrator password</label>
+      <input id="org-password" type="text" minlength="8" maxlength="128" aria-describedby="org-password-hint">
+      <p id="org-password-hint" class="muted small">At least 8 characters. Empty: only you can administer them.</p>
+      <p id="org-error" class="field-error" role="alert"></p>
+      <div class="dialog-actions">
+        <button type="button" class="btn" data-close>Cancel</button>
+        <button type="submit" class="btn primary">Add customer</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="seats-dialog" aria-labelledby="seats-dialog-title" closedby="any">
+    <form id="seats-form" method="dialog" autocomplete="off">
+      <h1 id="seats-dialog-title">Phone seats</h1>
+      <label for="seats-value">Most phones this customer may add</label>
+      <input id="seats-value" class="num" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="5" autofocus>
+      <p class="muted small">Empty or 0 for no limit.</p>
+      <div class="dialog-actions">
+        <button type="button" class="btn" data-close>Cancel</button>
+        <button type="submit" class="btn primary">Save</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="confirm-dialog" role="alertdialog" aria-labelledby="confirm-title" aria-describedby="confirm-text">
+    <form method="dialog">
+      <h1 id="confirm-title"></h1>
+      <p id="confirm-text"></p>
+      <div class="dialog-actions">
+        <button type="submit" class="btn" value="cancel" autofocus>Cancel</button>
+        <button type="submit" id="confirm-ok" class="btn danger-btn" value="ok"></button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="toasts" class="toasts" role="status" aria-live="polite"></div>
+</body>
+</html>

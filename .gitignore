@@ -143,3 +143,8 @@ Thumbs.db
 
 # Log files
 *.log
+# LAN Call runtime data: directory, certificates and private keys, logs
+data/
+
+# Backup of the files this project started from
+original-backup.zip

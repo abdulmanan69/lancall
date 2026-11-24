@@ -1,0 +1,13 @@
+{
+  "name": "LAN Call",
+  "short_name": "LAN Call",
+  "description": "Telephone for the local network",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f4f3ef",
+  "theme_color": "#1c7a4b",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

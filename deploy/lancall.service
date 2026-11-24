@@ -1,0 +1,35 @@
+# systemd unit for LAN Call.
+#
+#   sudo useradd --system --home /opt/lancall lancall
+#   sudo cp -r . /opt/lancall && sudo chown -R lancall: /opt/lancall
+#   sudo -u lancall python3 /opt/lancall/start_server.py --version   # builds .venv once
+#   sudo cp deploy/lancall.service /etc/systemd/system/
+#   sudo systemctl enable --now lancall
+#
+# Settings go in /etc/lancall.env as LANCALL_* variables, for example:
+#   LANCALL_PORT=443
+#   LANCALL_PIN=2468
+
+[Unit]
+Description=LAN Call telephone system
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=lancall
+WorkingDirectory=/opt/lancall
+EnvironmentFile=-/etc/lancall.env
+ExecStart=/opt/lancall/.venv/bin/python -m lancall
+Restart=always
+RestartSec=3
+
+# Lets the service use ports below 1024 (443, 80) without running as root.
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ReadWritePaths=/opt/lancall/data
+
+[Install]
+WantedBy=multi-user.target

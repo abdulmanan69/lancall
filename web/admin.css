@@ -1,0 +1,79 @@
+/* Administration console. Builds on style.css (colours, buttons, fields, dialogs). */
+
+.console {
+  max-width: 68rem;
+  margin: 0 auto;
+  padding: 1rem max(1rem, env(safe-area-inset-right)) 3rem max(1rem, env(safe-area-inset-left));
+}
+.console[hidden] { display: none; }
+
+.console-bar {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .75rem;
+  padding-bottom: 1rem; margin-bottom: 1rem;
+  border-bottom: 1px solid var(--line);
+}
+.console-links { display: flex; flex-wrap: wrap; gap: .5rem; }
+a.btn { display: inline-grid; place-items: center; text-decoration: none; }
+a.btn[hidden] { display: none; }
+
+h2 { font-size: 1.05rem; line-height: 1.3; margin: 0 0 .5rem; }
+
+.tiles {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr)); gap: .75rem;
+  margin: 0 0 1rem;
+}
+.tile { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: .8rem 1rem; }
+.tile dt { color: var(--muted); font-size: .85rem; }
+.tile dd { margin: .15rem 0 0; font-size: 1.6rem; font-weight: 700; line-height: 1.2; }
+.tile dd .small { font-size: .8rem; font-weight: 400; }
+
+.panel {
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 1rem 1.1rem; margin-bottom: 1rem;
+}
+.panel-head { display: flex; align-items: center; justify-content: space-between; gap: .75rem; margin-bottom: .5rem; }
+.panel-head h2 { margin: 0; }
+.join { margin-top: .5rem; display: flex; flex-wrap: wrap; gap: .4rem 1.5rem; font-size: 1.05rem; overflow-wrap: anywhere; }
+.join[hidden], .join span[hidden] { display: none; }
+
+.banner[hidden] { display: none; }
+
+/* ---------- tables ---------- */
+
+.table-wrap {
+  overflow: auto;
+  max-inline-size: 100%;
+  container-type: inline-size;
+  margin-top: .5rem;
+}
+.table-wrap.tall { max-block-size: min(28rem, 70vh); }
+table { inline-size: 100%; border-collapse: separate; border-spacing: 0; font-size: .925rem; }
+thead { position: sticky; inset-block-start: 0; z-index: 1; }
+th, td { text-align: start; padding: .55rem .6rem; border-bottom: 1px solid var(--line); vertical-align: middle; }
+thead th { background: var(--sunken); color: var(--muted); font-size: .8rem; font-weight: 600; white-space: nowrap; }
+tbody th { font-weight: 600; background: var(--surface); }
+tbody tr:last-child > * { border-bottom: 0; }
+td:last-child { white-space: nowrap; text-align: end; }
+td .dot { display: inline-block; vertical-align: baseline; }
+
+/* Narrow container: each row becomes a labelled card. */
+@container (width < 38rem) {
+  table, tbody, tr, th, td { display: block; }
+  thead { display: none; }
+  tr { border: 1px solid var(--line); border-radius: 8px; margin-block-end: .75rem; padding: .25rem 0; }
+  th, td { border: 0; padding: .3rem .75rem; }
+  tbody th { font-size: 1rem; background: none; }
+  td[data-label]::before { content: attr(data-label) ": "; color: var(--muted); }
+  td:last-child { white-space: normal; text-align: start; padding-top: .5rem; }
+}
+
+/* ---------- forms ---------- */
+
+.form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 0 1.25rem; align-items: start; }
+.form-grid + .form-grid { margin-top: 1.25rem; padding-top: .5rem; border-top: 1px solid var(--line); }
+.form-grid[hidden], .form-grid [hidden], .table-wrap[hidden] { display: none; }
+.wide-cell { grid-column: 1 / -1; }
+.form-grid .check { margin-top: 1rem; }
+.form-actions { display: flex; align-items: center; justify-content: flex-end; gap: 1rem; margin-top: .75rem; }
+.form-actions .field-error { margin: 0; flex: 1; }
+.btn[aria-pressed="true"]:hover { background: var(--ink); }

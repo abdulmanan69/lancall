@@ -1,0 +1,28 @@
+:root {
+  color-scheme: light dark;
+  --bg: #f4f3ef;
+  --ink: #1b1e1b;
+  --accent: #1c7a4b;
+  --accent-ink: #ffffff;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  line-height: 1.55;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #121412; --ink: #ecefea; --accent: #4cc38a; --accent-ink: #06200f; }
+}
+body { margin: 0; background: var(--bg); color: var(--ink); }
+main { max-width: 40rem; margin: 0 auto; padding: 1.5rem 1.25rem 4rem; }
+h1 { font-size: 1.6rem; }
+h2 { font-size: 1.1rem; margin-top: 2rem; }
+a { color: var(--accent); }
+li { margin: .35rem 0; }
+.button {
+  display: inline-block; padding: .7rem 1.1rem; border-radius: 8px;
+  background: var(--accent); color: var(--accent-ink); font-weight: 600; text-decoration: none;
+}
+
+/* Illustrations: Open Doodles by Pablo Stanley (CC0). Black ink, so flipped to light ink in dark mode. */
+.doodle { display: block; max-width: 100%; height: auto; margin: 0 auto .5rem; }
+@media (prefers-color-scheme: dark) {
+  .doodle { filter: invert(1) hue-rotate(180deg); }
+}
