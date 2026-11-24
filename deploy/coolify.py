@@ -8,6 +8,11 @@ Dockerfile itself; no git repository or image registry is needed.
         --token-file ~/.coolify-token --domain https://phones.example.com \\
         --env LANCALL_PIN=2468
 
+Coolify takes that Dockerfile on a command line, which caps its size. When the
+source is too large for that, publish a pushed GitHub commit instead:
+
+    python deploy/coolify.py ... --github owner/repo@commit
+
 Run it again after changing the code to publish the new version. The token is
 read from a file (or the COOLIFY_TOKEN environment variable) and never printed.
 """
@@ -42,18 +47,30 @@ def pack_source() -> str:
     return "\n".join(textwrap.wrap(base64.b64encode(buffer.getvalue()).decode(), 76))
 
 
-def dockerfile() -> str:
+MAX_DOCKERFILE = 90_000  # Coolify passes the Dockerfile on a command line
+
+
+def dockerfile(github: str = "") -> str:
+    if github:
+        repo, _, ref = github.partition("@")
+        # GitHub's archive has one top folder; keep only what the server needs.
+        source = f"""ADD https://codeload.github.com/{repo}/tar.gz/{ref or 'main'} /tmp/source.tar.gz
+RUN mkdir /tmp/src && tar -xzf /tmp/source.tar.gz -C /tmp/src --strip-components=1 \\
+    && cp -r /tmp/src/lancall /tmp/src/web /tmp/src/requirements.txt /app/ \\
+    && rm -rf /tmp/src /tmp/source.tar.gz \\"""
+    else:
+        source = f"""COPY <<'LANCALL_SOURCE' /tmp/source.b64
+{pack_source()}
+LANCALL_SOURCE
+RUN python -c "import base64,io,tarfile; tarfile.open(fileobj=io.BytesIO(base64.b64decode(open('/tmp/source.b64').read())), mode='r:gz').extractall('/app')" \\
+    && rm /tmp/source.b64 \\"""
     return f"""# syntax=docker/dockerfile:1
 FROM python:3.13-slim
 ENV PYTHONUNBUFFERED=1 PYTHONDONTWRITEBYTECODE=1 \\
     LANCALL_NO_TLS=1 LANCALL_TRUST_PROXY=1 \\
     LANCALL_HOST=0.0.0.0 LANCALL_PORT={PORT} LANCALL_DATA_DIR=/data
 WORKDIR /app
-COPY <<'LANCALL_SOURCE' /tmp/source.b64
-{pack_source()}
-LANCALL_SOURCE
-RUN python -c "import base64,io,tarfile; tarfile.open(fileobj=io.BytesIO(base64.b64decode(open('/tmp/source.b64').read())), mode='r:gz').extractall('/app')" \\
-    && rm /tmp/source.b64 \\
+{source}
     && pip install --no-cache-dir -r requirements.txt \\
     && mkdir -p /data
 VOLUME /data
@@ -99,13 +116,17 @@ def main() -> int:
     p.add_argument("--name", default="lancall")
     p.add_argument("--project", default="LAN Call")
     p.add_argument("--env", action="append", default=[], metavar="KEY=VALUE", help="environment variable to set (repeatable)")
+    p.add_argument("--github", default="", metavar="OWNER/REPO@COMMIT", help="build from this pushed commit of a public GitHub repository instead of packing the local files")
     a = p.parse_args()
 
     token = os.environ.get("COOLIFY_TOKEN") or (a.token_file.expanduser().read_text().strip() if a.token_file else "")
     if not token:
         p.error("give --token-file or set COOLIFY_TOKEN")
     api = Coolify(a.url, token)
-    encoded = base64.b64encode(dockerfile().encode()).decode()
+    text = dockerfile(a.github)
+    if len(text) > MAX_DOCKERFILE:
+        p.error(f"the packed source is {len(text) // 1000} KB, more than Coolify accepts; push the code and use --github OWNER/REPO@COMMIT")
+    encoded = base64.b64encode(text.encode()).decode()
 
     app = next((x for x in api.call("GET", "/applications") if x.get("name") == a.name), None)
     if app is None:
