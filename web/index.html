@@ -13,6 +13,7 @@
   <link rel="icon" href="icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icon.svg">
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="controls.css">
   <script src="app.js" defer></script>
 </head>
 <body>
@@ -32,7 +33,7 @@
 
   <!-- First run: name this phone -->
   <section id="view-onboarding" class="view onboarding" hidden>
-    <form id="onboarding-form" class="card" autocomplete="off">
+    <form id="onboarding-form" class="card" autocomplete="off" novalidate>
       <img class="doodle" src="doodle-loving.svg" alt="" width="208" height="156">
       <h1 id="onboarding-title">Set up this phone</h1>
       <p class="muted">Others see this name in the directory. Use the place or the person, such as “Reception” or “Workshop”.</p>
@@ -58,7 +59,7 @@
         </div>
       </div>
       <div class="bar-actions">
-        <label class="switch" title="Send callers straight to missed calls">
+        <label class="switch">
           <input id="dnd" type="checkbox" role="switch">
           <span class="long">Do not disturb</span><abbr class="short" title="Do not disturb">DND</abbr>
         </label>
@@ -84,7 +85,7 @@
       <section id="panel-directory" role="tabpanel" aria-labelledby="tab-directory">
         <div class="panel-body">
           <label class="visually-hidden" for="search">Search the directory</label>
-          <input id="search" type="search" placeholder="Search name or extension" autocomplete="off">
+          <div class="search-field"><input id="search" type="search" placeholder="Search name or extension" autocomplete="off"></div>
           <ul id="directory" class="list"></ul>
           <div id="directory-empty" class="empty" hidden><img class="doodle" src="doodle-chilling.svg" alt="" width="176" height="132"><p id="directory-empty-text"></p></div>
         </div>
@@ -178,21 +179,21 @@
   </section>
 
   <dialog id="settings" aria-labelledby="settings-title" closedby="any">
-    <form id="settings-form" method="dialog" autocomplete="off">
+    <form id="settings-form" method="dialog" autocomplete="off" novalidate>
       <h1 id="settings-title">Settings</h1>
 
       <label for="set-name">Phone name</label>
       <input id="set-name" type="text" maxlength="32" required autofocus>
 
       <label for="set-ext">Extension</label>
-      <input id="set-ext" class="num" type="text" inputmode="numeric" pattern="[1-9][0-9]{1,5}" maxlength="6" required aria-describedby="set-ext-hint settings-error">
+      <input id="set-ext" class="num" type="text" inputmode="numeric" pattern="[1-9][0-9]{1,5}" maxlength="6" required data-hint="use 2 to 6 digits, not starting with 0." aria-describedby="set-ext-hint settings-error">
       <p id="set-ext-hint" class="muted small">2 to 6 digits. Others dial this number to reach you.</p>
 
       <label for="set-mic">Microphone</label>
       <select id="set-mic"></select>
       <div class="mic-test">
         <button id="mic-test" type="button" class="btn small">Test microphone</button>
-        <meter id="mic-level" min="0" max="1" value="0" aria-label="Microphone level"></meter>
+        <div id="mic-level" class="level" role="meter" aria-label="Microphone level" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span></span></div>
       </div>
 
       <div id="set-speaker-row">
@@ -206,7 +207,7 @@
         <button id="ring-test" type="button" class="btn small">Test ring</button>
       </div>
 
-      <label class="check"><input id="set-awake" type="checkbox"> Keep the screen on (for a desk or wall phone)</label>
+      <label class="check"><input id="set-awake" type="checkbox" role="switch"> Keep the screen on (for a desk or wall phone)</label>
 
       <div id="notify-row" class="notify-row">
         <span id="notify-text" class="muted small"></span>
@@ -223,12 +224,13 @@
   </dialog>
 
   <dialog id="transfer" aria-labelledby="transfer-title" closedby="any">
-    <form id="transfer-form" method="dialog" autocomplete="off">
+    <form id="transfer-form" method="dialog" autocomplete="off" novalidate>
       <h1 id="transfer-title">Transfer this call</h1>
       <p class="muted small">You leave the call and the other person rings the extension you choose.</p>
       <label for="transfer-ext">Extension</label>
-      <input id="transfer-ext" class="num" type="text" inputmode="numeric" maxlength="6" list="transfer-list" required autofocus>
-      <datalist id="transfer-list"></datalist>
+      <input id="transfer-ext" class="num" type="text" inputmode="numeric" maxlength="6" required autofocus aria-describedby="transfer-error">
+      <ul id="transfer-list" class="list pick" aria-label="Available phones"></ul>
+      <p id="transfer-error" class="field-error" role="alert"></p>
       <div class="dialog-actions">
         <button type="button" id="transfer-cancel" class="btn">Cancel</button>
         <button type="submit" class="btn primary">Transfer</button>

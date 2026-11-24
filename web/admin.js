@@ -106,6 +106,30 @@ async function act(work, done) {
   }
 }
 
+// ------------------------------------------------------------- validation
+// Fields are checked here and the problem is written into the page, so the
+// browser's own pop-up bubbles never appear (the forms carry "novalidate").
+
+function fieldProblem(input) {
+  const label = (input.labels && input.labels[0] && input.labels[0].textContent.trim()) || 'This field';
+  const v = input.validity;
+  if (v.valueMissing) return `${label} is needed.`;
+  if (v.tooShort) return `${label} needs at least ${input.minLength} characters.`;
+  if (v.patternMismatch) return `${label}: ${input.dataset.hint || 'that is not a valid value.'}`;
+  return `${label}: check this value.`;
+}
+
+function validate(form, errorNode) {
+  const bad = [...form.elements].find((input) => input.willValidate && !input.validity.valid);
+  if (!bad) return true;
+  bad.setAttribute('aria-invalid', 'true');
+  errorNode.textContent = fieldProblem(bad);
+  bad.focus();
+  return false;
+}
+
+document.addEventListener('input', (event) => event.target.removeAttribute && event.target.removeAttribute('aria-invalid'));
+
 // ------------------------------------------------------------------ sign-in
 
 function showLogin() {
@@ -118,6 +142,8 @@ function showLogin() {
 
 $('login-form').addEventListener('submit', async (event) => {
   event.preventDefault();
+  $('login-error').textContent = '';
+  if (!validate(event.target, $('login-error'))) return;
   $('login-error').textContent = '';
   try {
     const result = await api('POST', '/api/admin/login', { password: $('login-password').value, org: ORG });
@@ -287,6 +313,8 @@ function editPhone(phone) {
 
 $('phone-form').addEventListener('submit', async (event) => {
   event.preventDefault(); // stay open until the server agrees: the extension may be taken
+  $('phone-error').textContent = '';
+  if (!validate(event.target, $('phone-error'))) return;
   const changes = {};
   if ($('phone-name').value.trim() !== editing.name) changes.name = $('phone-name').value.trim();
   if ($('phone-ext').value.trim() !== editing.ext) changes.ext = $('phone-ext').value.trim();
@@ -314,6 +342,8 @@ async function endCall(call) {
 $('settings-form').addEventListener('submit', async (event) => {
   event.preventDefault();
   $('settings-msg').textContent = '';
+  if (!validate(event.target, $('settings-msg'))) return;
+  $('settings-msg').textContent = '';
   try {
     await api('PATCH', `/api/orgs/${ORG}`, { name: $('set-org-name').value.trim(), pin: $('set-org-pin').value.trim(), monitor_notice: $('set-org-notice').checked });
     document.activeElement.blur();
@@ -326,6 +356,8 @@ $('settings-form').addEventListener('submit', async (event) => {
 
 $('password-form').addEventListener('submit', async (event) => {
   event.preventDefault();
+  $('password-msg').textContent = '';
+  if (!validate(event.target, $('password-msg'))) return;
   $('password-msg').textContent = '';
   try {
     if (!$('pw-current-row').hidden) await api('POST', '/api/platform/password', { current: $('pw-current').value, new: $('pw-new').value });
@@ -397,6 +429,8 @@ $('org-slug').addEventListener('input', () => {
 
 $('org-form').addEventListener('submit', async (event) => {
   event.preventDefault();
+  $('org-error').textContent = '';
+  if (!validate(event.target, $('org-error'))) return;
   try {
     await api('POST', '/api/platform/orgs', {
       name: $('org-name').value.trim(), slug: $('org-slug').value.trim(), seats: Number($('org-seats').value) || 0,
@@ -421,6 +455,8 @@ function editSeats(org) {
 
 $('seats-form').addEventListener('submit', (event) => {
   event.preventDefault();
+  $('seats-error').textContent = '';
+  if (!validate(event.target, $('seats-error'))) return;
   $('seats-dialog').close();
   act(() => api('PATCH', `/api/platform/orgs/${seatsFor.slug}`, { seats: Number($('seats-value').value) || 0 }), 'Seats updated');
 });
@@ -440,6 +476,8 @@ async function deleteOrg(org) {
 
 $('platform-pw-form').addEventListener('submit', async (event) => {
   event.preventDefault();
+  $('platform-pw-msg').textContent = '';
+  if (!validate(event.target, $('platform-pw-msg'))) return;
   $('platform-pw-msg').textContent = '';
   try {
     await api('POST', '/api/platform/password', { current: $('ppw-current').value, new: $('ppw-new').value });

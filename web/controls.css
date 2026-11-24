@@ -1,0 +1,210 @@
+/*
+ * Controls drawn by this stylesheet instead of the browser.
+ *
+ * The elements stay real <input> and <select>, so keyboard, screen reader and
+ * form behaviour are untouched; only the look is ours. Icons are masks, so
+ * they take the theme's colours in light and dark.
+ */
+
+:root {
+  --icon-check: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'/></svg>");
+  --icon-chevron: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+  --icon-search: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round'><circle cx='11' cy='11' r='7'/><line x1='16.5' y1='16.5' x2='21' y2='21'/></svg>");
+  --ring: 0 0 0 3px rgb(28 122 75 / .28);
+  caret-color: var(--accent);
+  scrollbar-color: var(--muted) transparent;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --ring: 0 0 0 3px rgb(76 195 138 / .3); }
+}
+
+::selection { background: var(--accent); color: var(--accent-ink); }
+::placeholder { color: var(--muted); opacity: .85; }
+
+/* ---------- text fields ---------- */
+
+input[type="text"], input[type="password"], input[type="search"], select {
+  transition: border-color .15s, box-shadow .15s;
+}
+input[type="text"]:hover, input[type="password"]:hover, input[type="search"]:hover, select:hover { border-color: var(--muted); }
+input[type="text"]:focus-visible, input[type="password"]:focus-visible, input[type="search"]:focus-visible, select:focus-visible {
+  outline: 2px solid var(--accent); outline-offset: -1px; box-shadow: var(--ring);
+}
+.dial-display:focus-visible { outline: none !important; box-shadow: none !important; border-bottom-color: var(--accent) !important; }
+[aria-invalid="true"] { border-color: var(--danger) !important; }
+[aria-invalid="true"]:focus-visible { outline-color: var(--danger) !important; box-shadow: 0 0 0 3px rgb(185 58 43 / .25) !important; }
+
+/* Saved-password fill: keep our colours instead of the browser's yellow or blue. */
+input:-webkit-autofill, input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--ink);
+  box-shadow: 0 0 0 100px var(--surface) inset;
+  caret-color: var(--ink);
+}
+
+/* Search: our own magnifier, and no browser "x" button. */
+input[type="search"] { appearance: none; -webkit-appearance: none; padding-inline-start: 2.6rem; }
+input[type="search"]::-webkit-search-cancel-button, input[type="search"]::-webkit-search-decoration { -webkit-appearance: none; display: none; }
+.search-field { position: relative; }
+.search-field::before {
+  content: ""; position: absolute; inset-block: 0; inset-inline-start: .85rem; inline-size: 1.15rem;
+  background: var(--muted);
+  -webkit-mask: var(--icon-search) no-repeat center / contain; mask: var(--icon-search) no-repeat center / contain;
+  pointer-events: none;
+}
+
+/* ---------- checkbox ---------- */
+
+input[type="checkbox"] {
+  appearance: none; -webkit-appearance: none;
+  display: inline-grid; place-content: center; flex: none;
+  inline-size: 1.3rem; block-size: 1.3rem; margin: 0;
+  background: var(--surface);
+  border: 2px solid var(--muted); border-radius: 6px;
+  cursor: pointer;
+  transition: background-color .15s, border-color .15s;
+}
+input[type="checkbox"]::before {
+  content: ""; inline-size: .85rem; block-size: .85rem;
+  background: var(--accent-ink);
+  -webkit-mask: var(--icon-check) no-repeat center / contain; mask: var(--icon-check) no-repeat center / contain;
+  scale: 0; transition: scale .15s ease;
+}
+input[type="checkbox"]:hover { border-color: var(--accent); }
+input[type="checkbox"]:checked { background: var(--accent); border-color: var(--accent); }
+input[type="checkbox"]:checked::before { scale: 1; }
+input[type="checkbox"]:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+input[type="checkbox"]:disabled { opacity: .5; cursor: not-allowed; }
+.check { min-block-size: 2.75rem; gap: .65rem; cursor: pointer; }
+
+/* ---------- switch (a checkbox with role="switch") ---------- */
+
+input[type="checkbox"][role="switch"] {
+  inline-size: 2.6rem; block-size: 1.5rem;
+  place-content: center start;
+  padding: 0 .17rem;
+  background: var(--line); border: 0; border-radius: 1rem;
+}
+input[type="checkbox"][role="switch"]::before {
+  inline-size: 1.16rem; block-size: 1.16rem;
+  background: #fff; border-radius: 50%;
+  -webkit-mask: none; mask: none;
+  scale: 1; box-shadow: 0 1px 3px rgb(0 0 0 / .35);
+  transition: translate .18s ease;
+}
+input[type="checkbox"][role="switch"]:hover { background: var(--muted); }
+input[type="checkbox"][role="switch"]:checked, input[type="checkbox"][role="switch"]:checked:hover { background: var(--accent); }
+input[type="checkbox"][role="switch"]:checked::before { translate: 1.1rem 0; }
+.switch { min-block-size: 2.75rem; gap: .55rem; }
+
+/* ---------- dropdown ---------- */
+
+/* Everywhere: our own arrow on the closed box. */
+select {
+  appearance: none; -webkit-appearance: none;
+  padding-inline-end: 2.5rem;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23808680' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+  background-repeat: no-repeat; background-position: right .85rem center; background-size: 1.1rem 1.1rem;
+  cursor: pointer;
+}
+/* Where the browser lets a page draw the opened list as well, draw that too. */
+@supports (appearance: base-select) {
+  select, select::picker(select) { appearance: base-select; }
+  select { background-image: none; padding-inline-end: .75rem; display: flex; align-items: center; justify-content: space-between; gap: .5rem; }
+  select::picker-icon {
+    content: ""; inline-size: 1.1rem; block-size: 1.1rem; flex: none;
+    background: var(--muted); mask: var(--icon-chevron) no-repeat center / contain;
+    transition: rotate .15s;
+  }
+  select:open::picker-icon { rotate: 180deg; }
+  select::picker(select) {
+    margin-block: .3rem; padding: .3rem;
+    color: var(--ink); background: var(--surface);
+    border: 1px solid var(--line); border-radius: 10px;
+    box-shadow: 0 8px 28px rgb(0 0 0 / .22);
+  }
+  select option {
+    display: flex; align-items: center; gap: .5rem;
+    min-block-size: 2.5rem; padding: .4rem .65rem;
+    border-radius: 7px; cursor: pointer;
+  }
+  select option:hover, select option:focus-visible { background: var(--sunken); outline: none; }
+  select option:checked { font-weight: 600; }
+  select option::checkmark {
+    content: ""; inline-size: 1rem; block-size: 1rem; flex: none; order: 1; margin-inline-start: auto;
+    background: var(--accent); mask: var(--icon-check) no-repeat center / contain;
+  }
+}
+
+/* ---------- slider ---------- */
+
+input[type="range"] {
+  appearance: none; -webkit-appearance: none;
+  --fill: 60%;
+  block-size: 1.75rem; margin: 0; background: none; cursor: pointer;
+}
+input[type="range"]::-webkit-slider-runnable-track {
+  block-size: .4rem; border-radius: 1rem;
+  background: linear-gradient(to right, var(--accent) var(--fill), var(--line) var(--fill));
+}
+input[type="range"]::-moz-range-track { block-size: .4rem; border-radius: 1rem; background: var(--line); }
+input[type="range"]::-moz-range-progress { block-size: .4rem; border-radius: 1rem; background: var(--accent); }
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  inline-size: 1.35rem; block-size: 1.35rem; margin-block-start: -.475rem;
+  background: var(--surface); border: 2px solid var(--accent); border-radius: 50%;
+  box-shadow: 0 1px 3px rgb(0 0 0 / .3);
+}
+input[type="range"]::-moz-range-thumb {
+  inline-size: 1.1rem; block-size: 1.1rem;
+  background: var(--surface); border: 2px solid var(--accent); border-radius: 50%;
+  box-shadow: 0 1px 3px rgb(0 0 0 / .3);
+}
+input[type="range"]:focus-visible { outline: none; }
+input[type="range"]:focus-visible::-webkit-slider-thumb { box-shadow: var(--ring); }
+input[type="range"]:focus-visible::-moz-range-thumb { box-shadow: var(--ring); }
+
+/* ---------- level meter ---------- */
+
+.level { flex: 1; min-width: 0; block-size: .6rem; background: var(--line); border-radius: 1rem; overflow: hidden; }
+.level span { display: block; block-size: 100%; background: var(--accent); border-radius: 1rem; transform-origin: left; transform: scaleX(0); }
+
+/* ---------- pick list (transfer) ---------- */
+
+.pick { max-block-size: 14rem; overflow: auto; margin-top: .5rem; }
+.pick[hidden] { display: none; }
+.pick li { padding: 0; border: 0; }
+.pick-btn {
+  display: flex; align-items: center; gap: .75rem; inline-size: 100%;
+  font: inherit; color: inherit; text-align: start;
+  background: none; border: 0; border-radius: 8px; padding: .45rem .5rem; cursor: pointer;
+}
+.pick-btn:hover { background: var(--sunken); }
+.pick-btn .who { display: grid; }
+
+/* ---------- buttons, dialogs, toasts ---------- */
+
+.btn, .call-btn, .key, .icon-btn, .round svg { transition: background-color .15s, filter .15s, scale .1s; }
+.btn:active:not(:disabled), .call-btn:active, .key:active, .icon-btn:active { scale: .96; }
+.round:active:not(:disabled) svg { scale: .94; }
+.btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; box-shadow: var(--ring); }
+
+dialog { box-shadow: 0 16px 48px rgb(0 0 0 / .3); }
+@media (prefers-reduced-motion: no-preference) {
+  dialog[open] { opacity: 1; translate: 0 0; transition: opacity .18s ease, translate .18s ease; }
+  dialog[open]::backdrop { opacity: 1; transition: opacity .18s ease; }
+  .toast { animation: toast-in .2s ease; }
+}
+@starting-style {
+  dialog[open] { opacity: 0; translate: 0 .75rem; }
+  dialog[open]::backdrop { opacity: 0; }
+}
+@keyframes toast-in { from { opacity: 0; translate: 0 .5rem; } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: 0s !important; animation-duration: 0s !important; }
+}
+@media (forced-colors: active) {
+  input[type="checkbox"]::before { background: CanvasText; }
+  input[type="checkbox"]:checked { background: Highlight; }
+  input[type="checkbox"][role="switch"]::before { background: ButtonText; }
+}

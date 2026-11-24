@@ -123,6 +123,40 @@ function showView(name) {
   for (const view of ['onboarding', 'main', 'call', 'sup']) $('view-' + view).hidden = view !== name;
 }
 
+// ------------------------------------------------------------- validation
+// Fields are checked here and the problem is written into the page, so the
+// browser's own pop-up bubbles never appear (the forms carry "novalidate").
+
+function fieldProblem(input) {
+  const label = (input.labels && input.labels[0] && input.labels[0].textContent.trim()) || 'This field';
+  const v = input.validity;
+  if (v.valueMissing) return `${label} is needed.`;
+  if (v.tooShort) return `${label} needs at least ${input.minLength} characters.`;
+  if (v.patternMismatch) return `${label}: ${input.dataset.hint || 'that is not a valid value.'}`;
+  return `${label}: check this value.`;
+}
+
+function validate(form, errorNode) {
+  const bad = [...form.elements].find((input) => input.willValidate && !input.validity.valid);
+  if (!bad) return true;
+  bad.setAttribute('aria-invalid', 'true');
+  errorNode.textContent = fieldProblem(bad);
+  bad.focus();
+  return false;
+}
+
+/* The filled part of a slider's track (WebKit has no pseudo-element for it). */
+function paintRange(input) {
+  const min = Number(input.min || 0);
+  const max = Number(input.max || 100);
+  input.style.setProperty('--fill', `${((Number(input.value) - min) / (max - min)) * 100}%`);
+}
+
+document.addEventListener('input', (event) => {
+  if (event.target.removeAttribute) event.target.removeAttribute('aria-invalid');
+  if (event.target.type === 'range') paintRange(event.target);
+});
+
 // ------------------------------------------------------------------ tones
 
 const TONES = {
@@ -940,11 +974,21 @@ function openTransfer() {
   const call = state.call;
   if (!call || call.phase !== 'active') return;
   const myExt = state.me && state.me.ext;
+  const free = state.directory.filter((entry) => entry.status === 'online' && entry.ext !== myExt && entry.ext !== call.peer.ext);
+  const choose = (entry) => {
+    $('transfer-ext').value = entry.ext;
+    $('transfer-form').requestSubmit();
+  };
   $('transfer-list').replaceChildren(
-    ...state.directory
-      .filter((entry) => entry.status === 'online' && entry.ext !== myExt && entry.ext !== call.peer.ext)
-      .map((entry) => el('option', { value: entry.ext, label: `${entry.name} (${entry.ext})` })),
+    ...free.map((entry) =>
+      el('li', {},
+        el('button', { type: 'button', class: 'pick-btn', onclick: () => choose(entry) },
+          el('span', { class: 'avatar', 'aria-hidden': 'true', text: initials(entry.name) }),
+          el('span', { class: 'who' }, el('span', { class: 'name', text: entry.name }), el('span', { class: 'meta num', text: `Extension ${entry.ext}` }))))),
   );
+  $('transfer-list').hidden = free.length === 0;
+  $('transfer-error').textContent = '';
+  $('transfer-ext').removeAttribute('aria-invalid');
   $('transfer-ext').value = '';
   $('transfer').showModal();
 }
@@ -1661,6 +1705,8 @@ function showOnboarding({ needPin = false, error = '' } = {}) {
 
 $('onboarding-form').addEventListener('submit', (event) => {
   event.preventDefault();
+  $('onboarding-error').textContent = '';
+  if (!validate(event.target, $('onboarding-error'))) return;
   const name = $('onboarding-name').value.trim();
   if (!name) return;
   pendingName = name;
@@ -1678,6 +1724,11 @@ $('onboarding-form').addEventListener('submit', (event) => {
 
 let micTest = null;
 
+function setMicLevel(level) {
+  $('mic-level').firstElementChild.style.transform = `scaleX(${level})`;
+  $('mic-level').setAttribute('aria-valuenow', String(Math.round(level * 100)));
+}
+
 function stopMicTest() {
   if (!micTest) return;
   cancelAnimationFrame(micTest.frame);
@@ -1685,7 +1736,7 @@ function stopMicTest() {
   stopStream(micTest.stream);
   micTest.source.disconnect();
   micTest = null;
-  $('mic-level').value = 0;
+  setMicLevel(0);
   $('mic-test').textContent = 'Test microphone';
 }
 
@@ -1721,7 +1772,7 @@ async function startMicTest() {
     analyser.getFloatTimeDomainData(samples);
     let peak = 0;
     for (const sample of samples) peak = Math.max(peak, Math.abs(sample));
-    $('mic-level').value = Math.min(1, peak * 1.6);
+    setMicLevel(Math.min(1, peak * 1.6));
     micTest.frame = requestAnimationFrame(tick);
   };
   tick();
@@ -1774,6 +1825,7 @@ function openSettings() {
   $('set-name').value = state.me.name;
   $('set-ext').value = state.me.ext;
   $('set-volume').value = state.settings.ringVolume;
+  paintRange($('set-volume'));
   $('set-awake').checked = state.settings.keepAwake;
   $('settings-error').textContent = '';
   $('set-mic').replaceChildren();
@@ -1809,6 +1861,8 @@ $('settings').addEventListener('close', () => {
 $('settings-form').addEventListener('submit', (event) => {
   // Keep the dialog open until the server confirms: the extension may be taken.
   event.preventDefault();
+  $('settings-error').textContent = '';
+  if (!validate(event.target, $('settings-error'))) return;
   const name = $('set-name').value.trim();
   const ext = $('set-ext').value.trim();
   state.settings.micId = $('set-mic').value;
@@ -1907,6 +1961,8 @@ $('transfer-cancel').addEventListener('click', () => $('transfer').close());
 $('transfer-form').addEventListener('submit', (event) => {
   event.preventDefault();
   const call = state.call;
+  $('transfer-error').textContent = '';
+  if (!validate(event.target, $('transfer-error'))) return;
   const to = $('transfer-ext').value.trim();
   if (!to || !call || call.phase !== 'active') return;
   send({ type: 'transfer', call_id: call.id, to });

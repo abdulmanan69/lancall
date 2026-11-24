@@ -8,13 +8,14 @@
   <title>Administration</title>
   <link rel="icon" href="/icon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/controls.css">
   <link rel="stylesheet" href="/admin.css">
   <script src="/admin.js" defer></script>
 </head>
 <body class="admin">
   <!-- Sign in -->
   <section id="view-login" class="view onboarding" hidden>
-    <form id="login-form" class="card">
+    <form id="login-form" class="card" novalidate>
       <img class="doodle" src="/doodle-sitting.svg" alt="" width="208" height="156">
       <h1 id="login-title">Administration</h1>
       <p id="login-hint" class="muted">Sign in to manage this phone system.</p>
@@ -100,7 +101,7 @@
 
       <section class="panel" aria-labelledby="settings-title">
         <h2 id="settings-title">Settings</h2>
-        <form id="settings-form" class="form-grid" autocomplete="off">
+        <form id="settings-form" class="form-grid" autocomplete="off" novalidate>
           <div>
             <label for="set-org-name">Name shown on the phones</label>
             <input id="set-org-name" type="text" maxlength="40" required>
@@ -110,14 +111,14 @@
             <input id="set-org-pin" class="num" type="text" maxlength="64" aria-describedby="set-org-pin-hint">
             <p id="set-org-pin-hint" class="muted small">Leave empty to let anyone with the address join.</p>
           </div>
-          <label class="check wide-cell"><input id="set-org-notice" type="checkbox"> Tell the people on a call when a supervisor is listening</label>
+          <label class="check wide-cell"><input id="set-org-notice" type="checkbox" role="switch"> Tell the people on a call when a supervisor is listening</label>
           <p class="muted small wide-cell">Listening to calls without telling the people on them is against the law in many places. Turn this off only if your callers are told another way.</p>
           <div class="wide-cell form-actions">
             <p id="settings-msg" class="field-error" role="status"></p>
             <button type="submit" class="btn primary">Save settings</button>
           </div>
         </form>
-        <form id="password-form" class="form-grid" autocomplete="off">
+        <form id="password-form" class="form-grid" autocomplete="off" novalidate>
           <div id="pw-current-row">
             <label for="pw-current">Current password</label>
             <input id="pw-current" type="password" autocomplete="current-password">
@@ -154,7 +155,7 @@
       <section class="panel" aria-labelledby="platform-pw-title">
         <h2 id="platform-pw-title">Platform password</h2>
         <p id="platform-pw-managed" class="muted" hidden>The password is set in the server configuration (LANCALL_ADMIN_PASSWORD).</p>
-        <form id="platform-pw-form" class="form-grid" autocomplete="off">
+        <form id="platform-pw-form" class="form-grid" autocomplete="off" novalidate>
           <div>
             <label for="ppw-current">Current password</label>
             <input id="ppw-current" type="password" autocomplete="current-password" required>
@@ -173,18 +174,18 @@
   </div>
 
   <dialog id="phone-dialog" aria-labelledby="phone-dialog-title" closedby="any">
-    <form id="phone-form" method="dialog" autocomplete="off">
+    <form id="phone-form" method="dialog" autocomplete="off" novalidate>
       <h1 id="phone-dialog-title">Edit phone</h1>
       <label for="phone-name">Name</label>
       <input id="phone-name" type="text" maxlength="32" required autofocus>
       <label for="phone-ext">Extension</label>
-      <input id="phone-ext" class="num" type="text" inputmode="numeric" pattern="[1-9][0-9]{1,5}" maxlength="6" required>
+      <input id="phone-ext" class="num" type="text" inputmode="numeric" pattern="[1-9][0-9]{1,5}" maxlength="6" required data-hint="use 2 to 6 digits, not starting with 0.">
       <label for="phone-role">Role</label>
       <select id="phone-role">
         <option value="user">User</option>
         <option value="supervisor">Supervisor (monitor, whisper, barge)</option>
       </select>
-      <label class="check"><input id="phone-disabled" type="checkbox"> Switched off (cannot connect; keeps its extension)</label>
+      <label class="check"><input id="phone-disabled" type="checkbox" role="switch"> Switched off (cannot connect; keeps its extension)</label>
       <p id="phone-error" class="field-error" role="alert"></p>
       <div class="dialog-actions">
         <button type="button" class="btn" data-close>Cancel</button>
@@ -194,15 +195,15 @@
   </dialog>
 
   <dialog id="org-dialog" aria-labelledby="org-dialog-title" closedby="any">
-    <form id="org-form" method="dialog" autocomplete="off">
+    <form id="org-form" method="dialog" autocomplete="off" novalidate>
       <h1 id="org-dialog-title">Add customer</h1>
       <label for="org-name">Name</label>
       <input id="org-name" type="text" maxlength="40" required autofocus>
       <label for="org-slug">Address</label>
-      <input id="org-slug" type="text" maxlength="32" pattern="[a-z0-9]([a-z0-9\-]{0,30}[a-z0-9])?" required aria-describedby="org-slug-hint" autocapitalize="none" spellcheck="false">
+      <input id="org-slug" type="text" maxlength="32" pattern="[a-z0-9]([a-z0-9\-]{0,30}[a-z0-9])?" required data-hint="use lower-case letters, digits and hyphens." aria-describedby="org-slug-hint" autocapitalize="none" spellcheck="false">
       <p id="org-slug-hint" class="muted small">Their phones open <span id="org-slug-preview" class="num"></span></p>
       <label for="org-seats">Phone seats</label>
-      <input id="org-seats" class="num" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="5" aria-describedby="org-seats-hint">
+      <input id="org-seats" class="num" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="5" data-hint="use digits only." aria-describedby="org-seats-hint">
       <p id="org-seats-hint" class="muted small">The most phones they may add. Empty for no limit.</p>
       <label for="org-pin">Access code for their phones</label>
       <input id="org-pin" class="num" type="text" maxlength="64">
@@ -218,11 +219,12 @@
   </dialog>
 
   <dialog id="seats-dialog" aria-labelledby="seats-dialog-title" closedby="any">
-    <form id="seats-form" method="dialog" autocomplete="off">
+    <form id="seats-form" method="dialog" autocomplete="off" novalidate>
       <h1 id="seats-dialog-title">Phone seats</h1>
       <label for="seats-value">Most phones this customer may add</label>
-      <input id="seats-value" class="num" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="5" autofocus>
+      <input id="seats-value" class="num" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="5" data-hint="use digits only." autofocus>
       <p class="muted small">Empty or 0 for no limit.</p>
+      <p id="seats-error" class="field-error" role="alert"></p>
       <div class="dialog-actions">
         <button type="button" class="btn" data-close>Cancel</button>
         <button type="submit" class="btn primary">Save</button>

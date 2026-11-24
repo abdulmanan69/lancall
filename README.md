@@ -10,6 +10,10 @@ Voice travels directly between the two phones, encrypted, and never leaves your 
 | --- | --- | --- | --- |
 | ![First-run screen asking for the phone's name](docs/screenshots/phone-setup.png) | ![Directory listing two available phones](docs/screenshots/phone-directory.png) | ![Call screen with mute, hold, transfer and end, and a notice that a supervisor is whispering](docs/screenshots/phone-in-call.png) | ![Supervisor screen with listen, whisper and barge buttons](docs/screenshots/phone-supervising.png) |
 
+Every control is drawn by the app, not the browser: switches, dropdowns, sliders, checkboxes and error messages look the same everywhere.
+
+<img src="docs/screenshots/phone-settings.png" alt="Settings with custom dropdowns, slider, level meter and switch" width="320">
+
 **Administration console** for one organisation:
 
 ![Administration console: usage tiles, live calls, phones, history and settings](docs/screenshots/admin-desktop.png)
